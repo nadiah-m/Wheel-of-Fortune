@@ -1,3 +1,5 @@
+const main = () => {
+
 //////////////// Generate words //////////////////
 const wordLibrary = [
   { categories: "MOVIES", name: ["SPIDERMAN", "IRONMAN"] },
@@ -8,6 +10,12 @@ const wordGenerator = () => {
   //generate random category
   const randomCategory = Math.floor(Math.random() * wordLibrary.length);
   const wordCategory = wordLibrary[randomCategory].categories;
+
+////////////////////display category///////////////////////////////
+const $category = $("#category");
+const $displayCategory = $category.text(`Category is ${wordCategory}`);
+$category.append($displayCategory);
+//////////////////////////////////////////////////////////////////
 
   //generate random words within category
   const wordGenerator =
@@ -59,7 +67,7 @@ const alphabet = [
 
 //////////////////////////////////////////////////
 
-const main = () => {
+
   ////////////////////create alhpabet ul//////////////////////////
   const createAlphabet = () => {
     alphabet.forEach((item) => {
@@ -88,6 +96,9 @@ const main = () => {
   createSquares();
   /////////////////////////////////////////////////////////////////////
 
+  
+
+
   ///////////////////convert squares to array//////////////////////////
   const $squares = $(".square");
   const $arraySquares = $squares.toArray();
@@ -106,8 +117,7 @@ const main = () => {
     }
   };
 
-  let player1Score = 0;
-  let player2Score = 0;
+
   let currentPlayer = "1";
 
   // const isGameOn = (textArray) => {
@@ -125,38 +135,7 @@ const main = () => {
       textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
     }
   };
-  //////////////////what user can do///////////////////////
-  // const comparePlayer1Action = ($clickedLetter) => {
-  //   getPlayer1Action();
-  //   loopSquareArray();
-  //   letter = $clickedLetter;
-  //   if (isValidAction(letter, textArray) && isGameOn(textArray)) {
-  //     if (word.includes(letter)) {
-  //       updateSquares(letter);
-  //       player1Score += 1;
-  //     } else {
-  //       changePlayer();
-  //       console.log("Wrong letter. Next player turn");
-  //     }
-  //   }
-  // };
 
-  ////////////////computer action////////////////////
-  // const compAction = () => {
-  //   loopSquareArray();
-  //   const randomAlphabet =
-  //     alphabet[Math.floor(Math.random() * alphabet.length)];
-  //   letter = randomAlphabet;
-  //   console.log(letter);
-  //   if (isValidAction(letter, textArray) && isGameOn(textArray)) {
-  //     if (word.includes(letter)) {
-  //       updateSquares(letter);
-  //       player2Score += 1;
-  //     } else {
-  //       changePlayer();
-  //     }
-  //   }
-  // };
 
   /////////////////update score/////////////////////////
   // const checkForWin = () => {
@@ -200,7 +179,9 @@ const main = () => {
   //////////check if letter has already been chosed previously///////////
   const isValidAction = (letter, textArray) => {
     if (textArray.includes(letter)) {
-      console.log("YOU CANT DO THAT!!!");
+      const $player1input = $("#player1Input");
+      const $notallowed = $player1input.text("The letter has already been chosen. Please choose another letter")
+      $player1input.append($notallowed);
       return false;
       // console.log("The game is still on");
     }
@@ -219,6 +200,7 @@ const main = () => {
     }
   };
 
+/////////////////////player data/////////////////////////////
   const player1 = {
     score: 0,
     input: [
@@ -237,11 +219,11 @@ const main = () => {
     score: 0,
     input: [
       {
-        clickedletter: "C",
+        compLetter: "C",
         correct: false,
       },
       {
-        clickedletter: "D",
+        compLetter: "D",
         correct: true,
       },
     ],
@@ -250,6 +232,8 @@ const main = () => {
   const render = (player1) => {
     player1Action(player1.input);
     console.log(player1);
+    player2Action(player2.input);
+    console.log(player2);
   };
 
   const player1Action = (input) => {
@@ -257,10 +241,25 @@ const main = () => {
     const inputletter = lastItem.clickedletter;
     loopSquareArray();
     if (isValidAction(inputletter, textArray) && isGameOn(textArray)) {
+
+
+      /////////display letter chosen////////
+      const $player1input = $("#player1Input");
+      const $letterchosen = $player1input.text(`Letter chosen by Player 1 is ${inputletter}`);
       if (word.includes(inputletter)) {
+
+
+        
+
+
+
         updateSquares(inputletter);
         lastItem.correct = true;
         player1.score += 1;
+
+        /////////////display score////////////
+
+
       } else {
         changePlayer();
         console.log("wrong letter.next player");
@@ -268,14 +267,24 @@ const main = () => {
     }
   };
 
-  constplayer2Action = (input) => {
+  const player2Action = (input) => {
     loopSquareArray();
     randomletter = alphabet[Math.floor(Math.random() * alphabet.length)];
-    
-    lastItem = player2.input[input.length-1];
+    const item = { compLetter: randomletter, correct: false};
+    player2.input.push(item)
+    const lastItem = player2.input[input.length - 1];
+    if (textArray.includes(randomletter)) {
+      randomletter;
+   if (word.includes(randomletter)) {
+     lastItem.correct = true;
+     updateSquares(randomletter);
+     player2.score +=1;
+   } else {
+     changePlayer();
+   }
 
   }
-
+  }
   const handleClickedLetter = (event) => {
     const clickedletter = $(event.target).text();
 
