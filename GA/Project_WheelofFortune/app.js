@@ -122,18 +122,15 @@ const main = () => {
 
   const checkForWin = () => {
     loopSquareArray();
-    const $result = $("#result")
-    if (textArray.join('') === word.join('')) {
+    const $result = $("#result");
+    if (textArray.join("") === word.join("")) {
       if (player1.score > player2.score) {
-        console.log("player 1 wins!");
+        $result.text("Player 1 wins!");
       } else if (player2.score > player1.score) {
-        console.log("player 2 wins!");
+        $result.text("Player 2 wins!");
       } else console.log("Its a tie!");
     }
   };
-
-
-
 
   /////////change player turn///////////////
   const $playerDisplay = $(".display-player");
@@ -172,7 +169,6 @@ const main = () => {
     }
   };
 
-
   /////////////////////////////////////////////////////////////////
 
   /////////////////////player data/////////////////////////////
@@ -208,20 +204,22 @@ const main = () => {
     ],
   };
 
-  const render = (player1,textArray) => {
+  const render = (player1, textArray) => {
     player1Action(player1.input);
     console.log(player1);
 
     console.log(player2);
     checkForWin(textArray);
- 
   };
   /////////////////////////////////////////////////////////////////////////////////
-
- 
-
+  const $displayP1Letter = (inputletter) => {
+    const $displayP1input = $("#player1letter");
+    const $p1Letter = $displayP1input.append(
+      `<li>Letter chosen by Player 1 is ${inputletter} </li>`
+    );
+  };
+  /////////////////////////////////////////////////////////////////////////////////
   const $displayscorep1 = $(".display-p1score");
-
   ///////////////////////////player 1 action/////////////////////////
   const player1Action = (input) => {
     const lastItem = player1.input[input.length - 1];
@@ -229,11 +227,7 @@ const main = () => {
     loopSquareArray();
     if (isValidAction(inputletter, textArray) && isGameOn(textArray)) {
       /////////display letter chosen////////
-      const $player1input = $("#player1Input");
-      const $letterchosen = $player1input.text(
-        `Letter chosen by Player 1 is ${inputletter}`
-      );
-      $player1input.append($letterchosen);
+      $displayP1Letter(inputletter);
 
       if (word.includes(inputletter)) {
         updateSquares(inputletter);
@@ -244,31 +238,27 @@ const main = () => {
         $displayscorep1.removeClass("player1score");
         $displayscorep1.text(player1.score);
       } else {
-
         /////////////////display wrong letter and change player///////////
         const $displaywrong = $("#player1Input");
         const $displaytext = $displaywrong.text(
           `Wrong letter. Next player turn`
         );
         $displaywrong.append($displaytext);
-////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////
         changePlayer();
         player2Action(input);
       }
     }
   };
 
+  ////////////////////display player 2 letter chosen/////////////
 
-////////////////////display player 2 letter chosen/////////////
-
-const $displayP2Letter = () => {
-  const $player2Input = $("#player2Input");
-    const $player2letter = $player2Input.text(
-      `Letter chosen by Player 2 is ${randomletter}`
+  const $displayP2Letter = () => {
+    const $displayP2input = $("#player2letter");
+    const $p2Letter = $displayP2input.append(
+      `<li>Letter chosen by Player 2 is ${randomletter} </li>`
     );
-    $player2Input.append($player2letter);
-}
-
+  };
 
   const $displayscorep2 = $(".display-p2score");
   ///////////////////////////player 2 action/////////////////////////
@@ -292,16 +282,16 @@ const $displayP2Letter = () => {
     }
     if (word.includes(randomletter)) {
       // lastItem.correct = true;
-      $displayP2Letter;
+
+      $displayP2Letter();
+
       updateSquares(randomletter);
       player2.score += 1;
       /////////////display score////////////
       $displayscorep2.removeClass("player2score");
       $displayscorep2.text(player2.score);
-
+      player2Action(input);
       ///////////////////////////////////////////
-      setTimeout(player2Action(input), 3000);
-
     } else {
       changePlayer();
     }
