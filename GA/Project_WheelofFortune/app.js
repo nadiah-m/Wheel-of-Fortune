@@ -112,16 +112,6 @@ const main = () => {
 
   let currentPlayer = "1";
 
-  // const isGameOn = (textArray) => {
-  //   if (textArray.includes("")) {
-  //     console.log("The game is still on");
-  //     return true;
-  //   } else {
-  //     console.log("GAME OVER");
-  //     return false;
-  //   }
-  // };
-
   const loopSquareArray = () => {
     for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
       textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
@@ -130,8 +120,10 @@ const main = () => {
 
   ///////////////check for win/////////////////////////
 
-  const checkForWin = (textArray) => {
-    if (isGameOn != true) {
+  const checkForWin = () => {
+    loopSquareArray();
+    const $result = $("#result")
+    if (textArray.join('') === word.join('')) {
       if (player1.score > player2.score) {
         console.log("player 1 wins!");
       } else if (player2.score > player1.score) {
@@ -140,22 +132,8 @@ const main = () => {
     }
   };
 
-  ///////////////check for win/////////////////////////
 
-  // const playerTurn = () => {
-  //   if (currentPlayer === "1") {
-  //     comparePlayer1Action($clickedLetter);
-  //     playGame($clickedLetter);
-  //   } else if (currentPlayer === "2") {
-  //     compAction();
-  //     playGame($clickedLetter);
-  //   }
-  // };
 
-  // playGame = ($clickedLetter) => {
-  //   playerTurn($clickedLetter);
-  //   checkForWin();
-  // };
 
   /////////change player turn///////////////
   const $playerDisplay = $(".display-player");
@@ -193,6 +171,8 @@ const main = () => {
       return false;
     }
   };
+
+
   /////////////////////////////////////////////////////////////////
 
   /////////////////////player data/////////////////////////////
@@ -234,6 +214,7 @@ const main = () => {
 
     console.log(player2);
     checkForWin(textArray);
+ 
   };
   /////////////////////////////////////////////////////////////////////////////////
 
