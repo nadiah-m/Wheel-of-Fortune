@@ -112,11 +112,25 @@ const main = () => {
 
   let currentPlayer = "1";
 
+  ////////////////loop square array////////////////////////////
   const loopSquareArray = () => {
     for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
       textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
     }
   };
+///////////////////////////////////////////////////////////////
+
+const updateSquareSolved = (solveletter) => {
+  for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
+    textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
+    $("#" + arrayIndex).text(solveletter[arrayIndex]);
+  
+  };
+};
+
+
+
+
 
   ///////////////check for win/////////////////////////
 
@@ -218,38 +232,73 @@ const main = () => {
       `<li>Letter chosen by Player 1 is ${inputletter} </li>`
     );
   };
+  const $displayinput = $("#player1Input");
   /////////////////////////////////////////////////////////////////////////////////
-  const $displayscorep1 = $(".display-p1score");
+  
+  const updateP1Score = () => {
+    const $displayscorep1 = $(".display-p1score");
+    $displayscorep1.removeClass("player1score");
+    $displayscorep1.text(player1.score);
+  }
+
+
+
+
+
+
   ///////////////////////////player 1 action/////////////////////////
   const player1Action = (input) => {
     const lastItem = player1.input[input.length - 1];
     const inputletter = lastItem.clickedletter;
+    const solveinput = lastItem.solveinput;
     loopSquareArray();
+
     if (isValidAction(inputletter, textArray) && isGameOn(textArray)) {
       /////////display letter chosen////////
       $displayP1Letter(inputletter);
 
       if (word.includes(inputletter)) {
+    
         updateSquares(inputletter);
         lastItem.correct = true;
         player1.score += 1;
 
         /////////////display score////////////
-        $displayscorep1.removeClass("player1score");
-        $displayscorep1.text(player1.score);
-      } else {
+        updateP1Score();
+    
+
+      } else if 
+      //////////////solve input correct////////
+        (solveinput === word.join('')) {
+          const solveletter = solveinput.split("");
+          $("#player1letter").empty();
+          updateSquareSolved(solveletter);
+          player1.score += 5;
+          updateP1Score();
+          $displayinput.text(
+            `You solved it!`
+          );
+
+        } else if (solveinput!== word.join('')) {
+          $displayinput.text(`Wrong answer. Next player turn`);
+          changePlayer();
+          player2Action(input);
+        }
+      } 
+      else {
         /////////////////display wrong letter and change player///////////
-        const $displaywrong = $("#player1Input");
-        const $displaytext = $displaywrong.text(
+        
+        const $displayinput = $("#player1Input");
+        const $displaytext = $displayinput.text(
           `Wrong letter. Next player turn`
         );
-        $displaywrong.append($displaytext);
+        $displayinput.append($displaytext);
         ////////////////////////////////////////////////////////////////////
         changePlayer();
         player2Action(input);
       }
     }
-  };
+  
 
   ////////////////////display player 2 letter chosen/////////////
 
@@ -270,12 +319,7 @@ const main = () => {
     const lastItem = player2.input[input.length - 1];
     /////////display letter chosen////////
     $displayP2Letter();
-    // const $player2Input = $("#player2Input");
-    // const $player2letter = $player2Input.text(
-    //   `Letter chosen by Player 2 is ${randomletter}`
-    // );
-    // $player2Input.append($player2letter);
-    ////////////////////////////////////////
+
 
     if (textArray.includes(randomletter)) {
       player2Action(input);
@@ -305,7 +349,18 @@ const main = () => {
     render(player1);
   };
 
+
+const handleSolveButton = (event) => {
+  const solve = $("input").val();
+  uppercaseSolve = solve.toUpperCase();
+  const item = {solveinput: uppercaseSolve}
+  player1.input.push(item);
+  render(player1);
+}
+
+
   $("#alphabetbuttons").on("click", handleClickedLetter);
+  $("#solve").on("click", handleSolveButton);
   render(player1);
 };
 
