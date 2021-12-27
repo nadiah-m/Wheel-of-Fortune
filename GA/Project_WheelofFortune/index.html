@@ -11,44 +11,49 @@
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous"
     ></script>
-    <script src="app.js" charset="utf-8"></script>
+    <script src="app.js" charset="utf-8"></script> 
   </head>
   <body>
-    <section>
+
       <div id="Title">
         <h1>Wheel of Fortune</h1>
       </div>
-    </section>
-    <section class="displayplayer">
+
+    <div class="displayplayer">
       Player <span class="display-player player 1">1</span>'s turn
-    </section>
-    <section>
+    </div>
+    <div id = "wheel-container">
+      <div class="picker"></div>
+    <img class="wheel" src="https://wheel.fhtl.byu.edu/images/wheel.png" alt="">
+    <div class = "spin-btn">Spin Wheel</div>
+    <div class = "display">-</div>
+  </div>
+ 
       <div id="alphabet">
         <ul id="alphabetbuttons"></ul>
       </div>
-    </section>
-    <section>
+ 
+
       <div id="answers">
         <ul id="answerletter"></ul>
       </div>
-    </section>
+  
 
     <div id="category"></div>
-    <div> 
+    <div>
       <input />
-      <button id = "solve">SOLVE</button>
-   
+      <button id="solve">SOLVE</button>
     </div>
 
     <div id="player1Input"></div>
     <ul id="player1letter"></ul>
     <div id="player1Score"></div>
-    Player 1 score is <span class ="display-p1score player1score"> 0 </span>
+    Player 1 score is <span class="display-p1score player1score"> 0 </span>
     <div id="player2Input"></div>
-    <ul id = "player2letter"></ul>
+    <ul id="player2letter"></ul>
     <div id="player2Score"></div>
 
-    Player 2 score is <span class = "display-p2score player2score"> 0</span>
+    Player 2 score is <span class="display-p2score player2score"> 0</span>
     <div id="result"></div>
   </body>
 </html>

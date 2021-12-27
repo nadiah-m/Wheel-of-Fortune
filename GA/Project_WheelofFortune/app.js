@@ -1,4 +1,66 @@
 const main = () => {
+  //<--------------------------INTERFACE-------------------------->//
+
+  ///////////////////////////Wheel/////////////////////////////////
+
+  const $wheel = $(".wheel");
+  const $spinButton = $(".spin-btn");
+  const $display = $(".display");
+  let deg = 0;
+  let zoneSize = 15; //deg
+
+  const valueZones = {
+    1: 5000,
+    2: 0,
+    3: 300,
+    4: 500,
+    5: 450,
+    6: 500,
+    7: 800,
+    8: -1,
+    9: 700,
+    10: +1,
+    11: 650,
+    12: 0,
+    13: 600,
+    14: 500,
+    15: 350,
+    16: 600,
+    17: 500,
+    18: 400,
+    19: 550,
+    20: 800,
+    21: 300,
+    22: 700,
+    23: 900,
+    24: 500,
+  };
+
+  const spinWheel = () => {
+    $display.text("-");
+    $spinButton.css("pointer-events", "none");
+    deg = Math.floor(1000 + Math.random() * 360);
+    $wheel.css("transition", "all 10s ease-out");
+    $wheel.css({ transform: "rotate(" + deg + "deg)" });
+  };
+
+  const handleSpinResult = (actualDeg) => {
+    const zoneResult = Math.ceil(actualDeg / zoneSize);
+    $display.text(valueZones[zoneResult]);
+  };
+
+  const transitionEnd = () => {
+    $spinButton.css("pointer-events", "auto");
+    $wheel.css("transition", "none");
+    const actualDeg = deg % 360;
+    $wheel.css({ transform: "rotate(" + actualDeg + "deg)" });
+    handleSpinResult(actualDeg);
+  };
+
+  $spinButton.on("click", spinWheel);
+
+  $wheel.on("transitionend", transitionEnd);
+
   //////////////// Generate words //////////////////
   const wordLibrary = [
     { categories: "MOVIES", name: ["SPIDERMAN", "IRONMAN"] },
@@ -118,19 +180,16 @@ const main = () => {
       textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
     }
   };
-///////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////
 
-const updateSquareSolved = (solveletter) => {
-  for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
-    textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
-    $("#" + arrayIndex).text(solveletter[arrayIndex]);
-  
+  const updateSquareSolved = (solveletter) => {
+    for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
+      textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
+      $("#" + arrayIndex).text(solveletter[arrayIndex]);
+    }
   };
-};
 
-
-
-
+  //<--------------------------GAME LOGIC-------------------------->//
 
   ///////////////check for win/////////////////////////
 
@@ -234,17 +293,12 @@ const updateSquareSolved = (solveletter) => {
   };
   const $displayinput = $("#player1Input");
   /////////////////////////////////////////////////////////////////////////////////
-  
+
   const updateP1Score = () => {
     const $displayscorep1 = $(".display-p1score");
     $displayscorep1.removeClass("player1score");
     $displayscorep1.text(player1.score);
-  }
-
-
-
-
-
+  };
 
   ///////////////////////////player 1 action/////////////////////////
   const player1Action = (input) => {
@@ -258,47 +312,38 @@ const updateSquareSolved = (solveletter) => {
       $displayP1Letter(inputletter);
 
       if (word.includes(inputletter)) {
-    
         updateSquares(inputletter);
         lastItem.correct = true;
         player1.score += 1;
 
         /////////////display score////////////
         updateP1Score();
-    
-
-      } else if 
-      //////////////solve input correct////////
-        (solveinput === word.join('')) {
-          const solveletter = solveinput.split("");
-          $("#player1letter").empty();
-          updateSquareSolved(solveletter);
-          player1.score += 5;
-          updateP1Score();
-          $displayinput.text(
-            `You solved it!`
-          );
-
-        } else if (solveinput!== word.join('')) {
-          $displayinput.text(`Wrong answer. Next player turn`);
-          changePlayer();
-          player2Action(input);
-        }
-      } 
-      else {
-        /////////////////display wrong letter and change player///////////
-        
-        const $displayinput = $("#player1Input");
-        const $displaytext = $displayinput.text(
-          `Wrong letter. Next player turn`
-        );
-        $displayinput.append($displaytext);
-        ////////////////////////////////////////////////////////////////////
+      } else if (
+        //////////////solve input correct////////
+        solveinput === word.join("")
+      ) {
+        const solveletter = solveinput.split("");
+        $("#player1letter").empty();
+        updateSquareSolved(solveletter);
+        player1.score += 5;
+        updateP1Score();
+        $displayinput.text(`You solved it!`);
+      } else if (solveinput !== word.join("")) {
+        $displayinput.text(`Wrong answer. Next player turn`);
         changePlayer();
         player2Action(input);
       }
+    } else {
+      /////////////////display wrong letter and change player///////////
+
+      const $displayinput = $("#player1Input");
+      const $displaytext = $displayinput.text(`Wrong letter. Next player turn`);
+      $displayinput.append($displaytext);
+      ////////////////////////////////////////////////////////////////////
+      changePlayer();
+      player2Action(input);
     }
-  
+  };
 
   ////////////////////display player 2 letter chosen/////////////
 
@@ -319,7 +364,6 @@ const updateSquareSolved = (solveletter) => {
     const lastItem = player2.input[input.length - 1];
     /////////display letter chosen////////
     $displayP2Letter();
-
 
     if (textArray.includes(randomletter)) {
       player2Action(input);
@@ -349,15 +393,13 @@ const updateSquareSolved = (solveletter) => {
     render(player1);
   };
 
-
-const handleSolveButton = (event) => {
-  const solve = $("input").val();
-  uppercaseSolve = solve.toUpperCase();
-  const item = {solveinput: uppercaseSolve}
-  player1.input.push(item);
-  render(player1);
-}
-
+  const handleSolveButton = (event) => {
+    const solve = $("input").val();
+    uppercaseSolve = solve.toUpperCase();
+    const item = { solveinput: uppercaseSolve };
+    player1.input.push(item);
+    render(player1);
+  };
 
   $("#alphabetbuttons").on("click", handleClickedLetter);
   $("#solve").on("click", handleSolveButton);
