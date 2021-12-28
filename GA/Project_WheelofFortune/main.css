@@ -26,8 +26,8 @@
 }
 
 .wheel {
-  width: 600px;
-  height: 600px;
+  width: 400px;
+  height: 400px;
   transform: rotate (0deg);
   transition: all 10s ease-out;
 }
@@ -68,4 +68,15 @@
   text-align: center;
   margin: 20px auto;
   font-size: 2rem;
+}
+
+.vowel-btn {
+  width: 150px;
+  border-radius: 10px;
+  background-color: orange;
+  text-align: center;
+  margin: 0 auto;
+  font-weight: bold;
+  padding: 20px;
+  text-transform: uppercase;
 }
