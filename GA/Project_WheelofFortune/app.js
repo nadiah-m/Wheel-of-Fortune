@@ -184,7 +184,7 @@ const main = () => {
 
   /////////////////////////////////////////////////////////////////
 
-  ///////////////////////////Wheel/////////////////////////////////
+  //<===================== WHEEL =====================>//
 
   const $wheel = $(".wheel");
   const $spinButton = $(".spin-btn");
@@ -194,17 +194,17 @@ const main = () => {
 
   const valueZones = {
     1: 5000,
-    2: 0,
+    2: "BANKRUPT",
     3: 300,
     4: 500,
     5: 450,
     6: 500,
     7: 800,
-    8: -1,
+    8: "LOSE A TURN",
     9: 700,
-    10: +1,
+    10: "FREE PLAY",
     11: 650,
-    12: 0,
+    12: "BANKRUPT",
     13: 600,
     14: 500,
     15: 350,
@@ -222,7 +222,7 @@ const main = () => {
   const spinWheel = () => {
     $display.text("-");
     $spinButton.css("pointer-events", "none");
-    deg = Math.floor(1000 + Math.random() * 360);
+    deg = Math.floor(2000 + Math.random() * 360);
     $wheel.css("transition", "all 10s ease-out");
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
   };
@@ -243,19 +243,16 @@ const main = () => {
     const actualDeg = deg % 360;
     $wheel.css({ transform: "rotate(" + actualDeg + "deg)" });
     handleSpinResult(actualDeg);
+    render(player1);
   };
-
-  $spinButton.on("click", spinWheel);
-
-  $wheel.on("transitionend", transitionEnd);
 
   /////////////////////player data/////////////////////////////
   const player1 = {
     score: 0,
     input: [
-      // {
-      //   clickedletter: "nonsense",
-      // },
+      {
+        clickedletter: "",
+      },
       // {
       //   clickedletter: "nonsense",
       // },
@@ -312,9 +309,7 @@ const main = () => {
     $displayinput.append($displaytext);
   };
 
-  //<===================PLAYER 1 ACTION===================>//
-  const player1Action = (input, spinResult) => {
-
+  const checkLetter = (input, spinResult) => {
     //input letter into player1 data
     const lastItemInput = player1.input[input.length - 1];
     const inputletter = lastItemInput.clickedletter;
@@ -326,45 +321,84 @@ const main = () => {
     //wheel score into player1 data
     const wheelScore = lastItemWheel.wheelResult;
 
+    //vowel letter into player1 data
+    const vowelLetter = lastItemInput.vowel;
+
+    loopSquareArray();
+    if (word.includes(inputletter)) {
+      updateSquares(inputletter);
+
+      player1.score += wheelScore;
+      prompt("Correct letter. Spin the wheel again");
+      /////////////display score////////////
+      updateP1Score();
+    } else if (word.includes(vowelLetter)) {
+      updateSquares(vowelLetter);
+      player1.score -= 200;
+      updateP1Score();
+      prompt("Spin the wheel again");
+    } else if (
+      //////////////solve input correct////////
+      solveinput === word.join("")
+    ) {
+      const solveletter = solveinput.split("");
+      $("#player1letter").empty();
+      updateSquareSolved(solveletter);
+      player1.score += 5;
+      updateP1Score();
+      $displayinput.text(`You solved it!`);
+
+      ////////////solve input wrong//////////
+    } else if (solveinput !== word.join("")) {
+      $displayinput.text(`Wrong answer. Next player turn`);
+      changePlayer();
+      player2Action(input, spinResult);
+    } else {
+      /////////////////display wrong letter and change player///////////
+
+      $displayP1Wrong();
+      ////////////////////////////////////////////////////////////////////
+      changePlayer();
+      player2Action(input, spinResult);
+    }
+  };
+
+  //<===================PLAYER 1 ACTION===================>//
+  const player1Action = (input, spinResult) => {
+    //input letter into player1 data
+    let clickedletter;
+    const lastItemInput = player1.input[input.length - 1];
+    const inputletter = lastItemInput.clickedletter;
+
+    //solve input into player1 data
+    const solveinput = lastItemInput.solveinput;
+    const lastItemWheel = player1.spinResult[spinResult.length - 1];
+
+    //wheel score into player1 data
+    const wheelScore = lastItemWheel.wheelResult;
+
+    //vowel letter into player1 data
+    const vowelLetter = lastItemInput.vowel;
+
     loopSquareArray();
     $displayinput.empty();
 
     if (isGameOn(textArray) && isValidAction(letter, textArray)) {
       /////////display letter chosen////////
       $displayP1Letter(inputletter);
-
+      $displayP1Letter(vowelLetter);
       //guess correct letter
-      if (word.includes(inputletter)) {
-        updateSquares(inputletter);
 
-        player1.score += wheelScore;
-
-        /////////////display score////////////
-        updateP1Score();
-      } else if (
-        //////////////solve input correct////////
-        solveinput === word.join("")
-      ) {
-        const solveletter = solveinput.split("");
-        $("#player1letter").empty();
-        updateSquareSolved(solveletter);
-        player1.score += 5;
-        updateP1Score();
-        $displayinput.text(`You solved it!`);
-
-        ////////////solve input wrong//////////
-      } else if (solveinput !== word.join("")) {
-        $displayinput.text(`Wrong answer. Next player turn`);
+      if (wheelScore === "BANKRUPT") {
+        player1.score = 0;
         changePlayer();
         player2Action(input, spinResult);
-      } else {
-        /////////////////display wrong letter and change player///////////
-
-        $displayP1Wrong();
-        ////////////////////////////////////////////////////////////////////
+      } else if (wheelScore === "LOSE A TURN") {
         changePlayer();
         player2Action(input, spinResult);
-      }
+      } else if (wheelScore === "FREE PLAY") {
+        prompt("Spin the wheel again");
+      } else checkLetter(input, spinResult);
     }
   };
 
@@ -383,20 +417,14 @@ const main = () => {
     $displayscorep2.text(player2.score);
   };
 
-  //<===================PLAYER 2 ACTION===================>//
-  const player2Action = (input, spinResult) => {
-    const wheelNr = valueZones[Math.floor(Math.random() * 25)];
-
-    const wheelItem = { wheelResult: wheelNr };
-    player2.spinResult.push(wheelItem);
+  const checkRandomLetter = (input, spinResult) => {
     const lastItemWheel = player2.spinResult[spinResult.length - 1];
     const wheelScore = lastItemWheel.wheelResult;
-
     loopSquareArray();
     randomletter = alphabet[Math.floor(Math.random() * alphabet.length)];
     const item = { compLetter: randomletter };
     player2.input.push(item);
-    const lastItem = player2.input[input.length - 1];
+    
 
     /////////display letter chosen////////
     $displayP2Letter();
@@ -418,6 +446,55 @@ const main = () => {
     }
   };
 
+  //<===================PLAYER 2 ACTION===================>//
+  const player2Action = (input, spinResult) => {
+    let wheelNr = valueZones[Math.floor(Math.random() * 25)];
+
+    const wheelItem = { wheelResult: wheelNr };
+    player2.spinResult.push(wheelItem);
+    const lastItemWheel = player2.spinResult[spinResult.length - 1];
+    const wheelScore = lastItemWheel.wheelResult;
+
+    if (wheelScore === "BANKRUPT") {
+      player2.score = 0;
+      changePlayer();
+    } else if (wheelScore === "LOSE A TURN") {
+      changePlayer();
+    } else if (wheelScore === "FREE PLAY") {
+      player2Action(input, spinResult);
+    } else {
+      randomletter = alphabet[Math.floor(Math.random() * alphabet.length)];
+      const item = { compLetter: randomletter };
+      player2.input.push(item);
+      
+      checkRandomLetter();
+    }
+    // loopSquareArray();
+    // randomletter = alphabet[Math.floor(Math.random() * alphabet.length)];
+    // const item = { compLetter: randomletter };
+    // player2.input.push(item);
+    // const lastItem = player2.input[input.length - 1];
+
+    // /////////display letter chosen////////
+    // $displayP2Letter();
+
+    // if (textArray.includes(randomletter)) {
+    //   player2Action(input, spinResult);
+    // }
+    // if (word.includes(randomletter)) {
+    //   $displayP2Letter();
+
+    //   updateSquares(randomletter);
+    //   player2.score += wheelScore;
+    //   /////////////display score////////////
+    //   $displayP2Score();
+    //   player2Action(input, spinResult);
+    //   ///////////////////////////////////////////
+    // } else {
+    //   changePlayer();
+    // }
+  };
+
   const handleClickedLetter = (event) => {
     const clickedletter = $(event.target).text();
 
@@ -437,20 +514,46 @@ const main = () => {
     render(player1);
   };
 
-  const handleVowel = (event) => {
+  const createVowel = () => {
     const vowel = ["A", "E", "I", "O", "U"];
     const createVowelBtn = () => {
       vowel.forEach((item) => {
-        const letter = $("#vowelinput").append("<button>" + item + "</button>")
-      })
-    } 
+        const $letter = $("<button>" + item + "</button>").attr(
+          "id",
+          "vowelletter"
+        );
+        const letter = $("#vowelinput").append($letter);
+      });
+    };
     createVowelBtn();
-  }
+  };
+
+  createVowel();
+
+  const handleVowel = () => {
+    if (player1.score < 200) {
+      alert("You need more than $200 to buy a vowel");
+    } else {
+      alert("Click a vowel");
+    }
+  };
+
+  const handleClickedVowel = (event) => {
+    const clickedVowel = $(event.target).text();
+    const buyVowel = { vowel: clickedVowel };
+    player1.input.push(buyVowel);
+    $(event.target).attr("disabled", true);
+    $(event.target).css("color", "grey");
+    console.log(player1);
+    render(player1);
+  };
 
   $("#alphabetbuttons").on("click", handleClickedLetter);
   $("#solve").on("click", handleSolveButton);
   $(".vowel-btn").on("click", handleVowel);
- 
+  $("#vowelinput").on("click", handleClickedVowel);
+  $spinButton.on("click", spinWheel);
+  $wheel.on("transitionend", transitionEnd);
 
   render(player1);
 };
