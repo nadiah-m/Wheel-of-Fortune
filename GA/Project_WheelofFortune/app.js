@@ -83,12 +83,16 @@ const main = () => {
     for (let j = 0; j < word.length; j++) {
       if (word[j] === " ") {
         //white square with text for space " "
-        const $emptySpace = $("<li>").addClass("white square").attr("id", j);
+        const $emptySpace = $("<li>")
+          .addClass("white square p-2 bd-highlight")
+          .attr("id", j);
         const $createSpace = $("#answerletter").append($emptySpace);
         $("#" + j).text(word[j]);
       } else {
         //green squares for letters
-        const $squareLetter = $("<li>").addClass("green square").attr("id", j);
+        const $squareLetter = $("<li>")
+          .addClass("green square p-2 bd-highlight")
+          .attr("id", j);
         const $createSquare = $("#answerletter").append($squareLetter);
       }
     }
@@ -102,17 +106,19 @@ const main = () => {
   const $arraySquares = $squares.toArray();
   const textArray = [];
   let letter;
+  let letterCount;
 
   ///////////update squares with correct letter if clicked///////////
   const updateSquares = (letter) => {
     //on click of alphabet button, check if its the correct letter
+    letterCount = 0;
     for (let i = 0; i < word.length; i++) {
       if (letter === word[i]) {
         $("#" + i).text(letter);
+        letterCount += 1;
       }
     }
   };
-
 
   ////////////////loop square array////////////////////////////
   const loopSquareArray = () => {
@@ -179,7 +185,7 @@ const main = () => {
     10: "FREE PLAY",
     11: 650,
     12: "BANKRUPT",
-    13: 600,
+    13: 900,
     14: 500,
     15: 350,
     16: 600,
@@ -196,9 +202,10 @@ const main = () => {
   const spinWheel = () => {
     $display.text("-");
     $spinButton.css("pointer-events", "none");
-    deg = Math.floor(2000 + Math.random() * 360);
+    deg = Math.floor(1000 + Math.random() * 360);
     $wheel.css("transition", "all 10s ease-out");
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
+    $displayinput.empty();
   };
 
   const handleSpinResult = (actualDeg) => {
@@ -217,7 +224,6 @@ const main = () => {
     const actualDeg = deg % 360;
     $wheel.css({ transform: "rotate(" + actualDeg + "deg)" });
     handleSpinResult(actualDeg);
-    render(player1);
   };
 
   /////////////////////player data/////////////////////////////
@@ -239,22 +245,18 @@ const main = () => {
     console.log(player1);
   };
 
-  const $displayinput = $("#player1Input");
+ 
 
   /////////////////Display player 1 score//////////////////////
   const updateP1Score = () => {
     const $displayscorep1 = $(".display-p1score");
-    $displayscorep1.removeClass("player1score");
+    // $displayscorep1.removeClass("player1score");
     $displayscorep1.text(player1.score);
   };
 
   /////////////////Display wrong move player 1//////////////////////
 
-  const $displayP1Wrong = () => {
-    const $displayinput = $("#player1Input");
-    const $displaytext = $displayinput.text(`Wrong letter. Next player turn`);
-    $displayinput.append($displaytext);
-  };
+  const $displayinput = $("#player1Input");
 
   const checkLetter = (input, spinResult) => {
     //input letter into player1 data
@@ -274,16 +276,17 @@ const main = () => {
     loopSquareArray();
     if (word.includes(inputletter)) {
       updateSquares(inputletter);
-
-      player1.score += wheelScore;
-
+      $displayinput.text(`Correct answer`);
+      for (let i = 0; i < letterCount; i++) {
+        player1.score += wheelScore;
+      }
       /////////////display score////////////
       updateP1Score();
     } else if (word.includes(vowelLetter)) {
       updateSquares(vowelLetter);
       player1.score -= 200;
       updateP1Score();
-      prompt("Spin the wheel again");
+      
     } else if (
       //////////////solve input correct////////
       solveinput === word.join("")
@@ -297,19 +300,21 @@ const main = () => {
 
       ////////////solve input wrong//////////
     } else if (solveinput !== word.join("")) {
+      // prompt("Wrong answer. Try again")
       $displayinput.text(`Wrong answer`);
     } else {
       /////////////////display wrong letter and change player///////////
 
-      $displayP1Wrong();
+   
       ////////////////////////////////////////////////////////////////////
     }
   };
-
+  let clickedletter;
+  
   //<===================PLAYER 1 ACTION===================>//
   const player1Action = (input, spinResult) => {
     //input letter into player1 data
-    let clickedletter;
+    
     const lastItemInput = player1.input[input.length - 1];
     const inputletter = lastItemInput.clickedletter;
 
@@ -324,20 +329,18 @@ const main = () => {
     const vowelLetter = lastItemInput.vowel;
 
     loopSquareArray();
-    $displayinput.empty();
+    
 
     if (isGameOn(textArray) && isValidAction(letter, textArray)) {
       /////////display letter chosen////////
- 
+
       //guess correct letter
 
       if (wheelScore === "BANKRUPT") {
         player1.score = 0;
-
-        
       } else if (wheelScore === "LOSE A TURN") {
       } else if (wheelScore === "FREE PLAY") {
-        prompt("Spin the wheel again");
+        alert("Spin the wheel again");
       } else checkLetter(input, spinResult);
     }
   };
@@ -349,7 +352,7 @@ const main = () => {
     player1.input.push(item);
     $(event.target).attr("disabled", true);
     $(event.target).css("color", "grey");
-
+    $("#alphabetbuttons").hide();
     render(player1);
   };
 
@@ -358,6 +361,7 @@ const main = () => {
     uppercaseSolve = solve.toUpperCase();
     const item = { solveinput: uppercaseSolve };
     player1.input.push(item);
+    $("#solve-word").hide();
     render(player1);
   };
 
@@ -381,7 +385,7 @@ const main = () => {
     if (player1.score < 200) {
       alert("You need more than $200 to buy a vowel");
     } else {
-      alert("Click a vowel");
+      $("#vowelinput").show();
     }
   };
 
@@ -395,13 +399,22 @@ const main = () => {
     render(player1);
   };
 
+  const $displayConsonant = () => {
+    $("#alphabetbuttons").show();
+  };
+ 
+  const $displaySolve = () => {
+    $("#solve-word").show();
+  };
+
   $("#alphabetbuttons").on("click", handleClickedLetter);
   $("#solve").on("click", handleSolveButton);
   $(".vowel-btn").on("click", handleVowel);
   $("#vowelinput").on("click", handleClickedVowel);
   $spinButton.on("click", spinWheel);
   $wheel.on("transitionend", transitionEnd);
-
+  $(".choose-letter").on("click", $displayConsonant);
+  $(".solve-btn").on("click", $displaySolve);
   render(player1);
 };
 

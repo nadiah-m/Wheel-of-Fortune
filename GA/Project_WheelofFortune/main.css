@@ -1,14 +1,11 @@
 .square {
-  width: 3%;
+  width: 6%;
   color: white;
   background-color: #b3c2bf;
   padding: 0.5em;
   margin: 0.3em 0.3em;
-  flex-basis: 1em;
-  text-align: center;
-  float: left;
   list-style-type: none;
-  height: 30px;
+  height: 50px;
 }
 
 .green {
@@ -20,7 +17,6 @@
 }
 
 #wheel-container {
-  text-align: center;
   top: 20px;
   position: relative;
 }
@@ -46,15 +42,29 @@
   border-radius: 50%;
 }
 
-.spin-btn {
-  width: 150px;
+.btn {
   border-radius: 10px;
-  background-color: gold;
-  text-align: center;
-  margin: 0 auto;
+  margin: 1em 1em;
   font-weight: bold;
-  padding: 20px;
+  padding: 10px;
   text-transform: uppercase;
+  text-align: center;
+}
+
+.spin-btn {
+  background-color: gold;
+}
+
+.vowel-btn {
+  background-color: orange;
+}
+
+.solve-btn {
+  background-color: gold;
+}
+
+.choose-letter {
+  background-color: orange;
 }
 
 .display {
@@ -66,17 +76,19 @@
   border: 1px solid black;
   border-radius: 20px;
   text-align: center;
-  margin: 20px auto;
+  margin: 50px auto;
   font-size: 1rem;
 }
 
-.vowel-btn {
-  width: 150px;
-  border-radius: 10px;
-  background-color: orange;
-  text-align: center;
-  margin: 0 auto;
-  font-weight: bold;
-  padding: 20px;
-  text-transform: uppercase;
+#vowelinput {
+  display: none;
+}
+
+#alphabetbuttons {
+  display: none;
+  color: black;
+}
+
+#solve-word {
+  display: none;
 }
