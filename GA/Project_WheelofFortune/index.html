@@ -49,10 +49,22 @@
       <div class="row">
         <div class="col-md-2 col align-self-center">
           <div class="d-flex flex-column bd-highlight">
-            <div class="spin-btn btn">Spin Wheel</div>
-            <div class="vowel-btn btn">Buy a vowel</div>
-            <div class="solve-btn btn">Solve</div>
-            <div class="choose-letter btn">Choose Letter</div>
+            <div class="display">-</div>
+            <div id="player1Input"></div>
+            <ul id="player1letter"></ul>
+            <div id="player1Score"></div>
+            Player 1 score is
+            <span class="display-p1score player1score"> 0 </span>
+
+            <div id="result"></div>
+            <button type="button" class="spin-btn btn">Spin Wheel</button>
+            <button type="button" class="vowel-btn btn">
+              Buy a vowel
+            </button>
+            <button type="button" disabled class="solve-btn btn">Solve</button>
+            <button type="button" disabled class="choose-letter btn">
+              Choose Letter
+            </button>
           </div>
         </div>
 
@@ -65,14 +77,6 @@
               alt=""
             />
           </div>
-
-          <div class="display">-</div>
-
-          <div id="player1Input"></div>
-          <ul id="player1letter"></ul>
-          <div id="player1Score"></div>
-          Player 1 score is
-          <span class="display-p1score player1score"> 0 </span>
 
           <div id="result"></div>
         </div>

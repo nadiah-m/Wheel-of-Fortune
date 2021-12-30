@@ -205,6 +205,11 @@ const main = () => {
     deg = Math.floor(1000 + Math.random() * 360);
     $wheel.css("transition", "all 10s ease-out");
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
+
+    $(".spin-btn").attr("disabled", true);
+    $(".vowel-btn").attr("disabled", false);
+    $(".solve-btn").attr("disabled", false);
+    $(".choose-letter").attr("disabled", false);
     $displayinput.empty();
   };
 
@@ -245,8 +250,6 @@ const main = () => {
     console.log(player1);
   };
 
- 
-
   /////////////////Display player 1 score//////////////////////
   const updateP1Score = () => {
     const $displayscorep1 = $(".display-p1score");
@@ -286,7 +289,6 @@ const main = () => {
       updateSquares(vowelLetter);
       player1.score -= 200;
       updateP1Score();
-      
     } else if (
       //////////////solve input correct////////
       solveinput === word.join("")
@@ -304,17 +306,15 @@ const main = () => {
       $displayinput.text(`Wrong answer`);
     } else {
       /////////////////display wrong letter and change player///////////
-
-   
       ////////////////////////////////////////////////////////////////////
     }
   };
   let clickedletter;
-  
+
   //<===================PLAYER 1 ACTION===================>//
   const player1Action = (input, spinResult) => {
     //input letter into player1 data
-    
+
     const lastItemInput = player1.input[input.length - 1];
     const inputletter = lastItemInput.clickedletter;
 
@@ -329,7 +329,6 @@ const main = () => {
     const vowelLetter = lastItemInput.vowel;
 
     loopSquareArray();
-    
 
     if (isGameOn(textArray) && isValidAction(letter, textArray)) {
       /////////display letter chosen////////
@@ -353,6 +352,12 @@ const main = () => {
     $(event.target).attr("disabled", true);
     $(event.target).css("color", "grey");
     $("#alphabetbuttons").hide();
+
+    $(".spin-btn").attr("disabled", false);
+    $(".vowel-btn").attr("disabled", false);
+    $(".solve-btn").attr("disabled", false);
+    $(".choose-letter").attr("disabled", true);
+
     render(player1);
   };
 
@@ -386,6 +391,10 @@ const main = () => {
       alert("You need more than $200 to buy a vowel");
     } else {
       $("#vowelinput").show();
+
+      $(".vowel-btn").attr("disabled", true);
+      $(".solve-btn").attr("disabled", true);
+      $(".choose-letter").attr("disabled", true);
     }
   };
 
@@ -395,6 +404,8 @@ const main = () => {
     player1.input.push(buyVowel);
     $(event.target).attr("disabled", true);
     $(event.target).css("color", "grey");
+    $("#vowelinput").hide();
+    $(".vowel-btn").attr("disabled", false);
     console.log(player1);
     render(player1);
   };
@@ -402,7 +413,7 @@ const main = () => {
   const $displayConsonant = () => {
     $("#alphabetbuttons").show();
   };
- 
+
   const $displaySolve = () => {
     $("#solve-word").show();
   };
