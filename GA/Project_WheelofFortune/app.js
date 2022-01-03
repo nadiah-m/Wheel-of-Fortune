@@ -139,16 +139,18 @@ const main = () => {
   //<--------------------------GAME LOGIC-------------------------->//
 
   //////////check if letter already in the squares//////////
-  const isValidAction = (letter, textArray) => {
-    if (textArray.includes(letter)) {
-      const $player1input = $("#player1Input");
-      const $notallowed = $player1input.text(
-        "The letter has already been chosen. Please choose another letter"
-      );
-      $player1input.append($notallowed);
-      return false;
+  const checkWin = () => {
+    for (let i = 0; i < $arraySquares.length; i++) {
+      textArray[i] = $arraySquares[i].innerHTML;
+      if (textArray.filter((x) => x).length === textArray.length) {
+        $displayinput.text(`You solved it! Your score is ${player1.score}`);
+        console.log("You Won");
+        console.log(textArray);
+      } // return true;
+      else {
+        // return false;
+      }
     }
-    return true;
   };
 
   /////////////check for empty string in squares///////////////////
@@ -197,6 +199,31 @@ const main = () => {
     22: 700,
     23: 900,
     24: 500,
+
+    // 1: "BANKRUPT",
+    // 2: "BANKRUPT",
+    // 3: "BANKRUPT",
+    // 4: "BANKRUPT",
+    // 5: "BANKRUPT",
+    // 6: "BANKRUPT",
+    // 7: 800,
+    // 8: "LOSE A TURN",
+    // 9: 700,
+    // 10: "FREE PLAY",
+    // 11: 650,
+    // 12: "BANKRUPT",
+    // 13: 900,
+    // 14: 500,
+    // 15: 350,
+    // 16: "BANKRUPT",
+    // 17: 500,
+    // 18: 400,
+    // 19: 550,
+    // 20: "BANKRUPT",
+    // 21: 300,
+    // 22: 700,
+    // 23: "BANKRUPT",
+    // 24: 500,
   };
 
   const spinWheel = () => {
@@ -207,28 +234,53 @@ const main = () => {
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
 
     $(".spin-btn").attr("disabled", true);
-    $(".vowel-btn").attr("disabled", false);
-    $(".solve-btn").attr("disabled", false);
-    $(".choose-letter").attr("disabled", false);
+    $(".vowel-btn").attr("disabled", true);
+    $(".solve-btn").attr("disabled", true);
+    $(".choose-letter").attr("disabled", true);
+
     $displayinput.empty();
   };
 
-  const handleSpinResult = (actualDeg) => {
+  const handleSpinResult = (actualDeg, player1) => {
     const zoneResult = Math.ceil(actualDeg / zoneSize);
     const wheelResult = valueZones[zoneResult];
     $display.text(wheelResult);
     const wheelItem = { wheelResult: wheelResult };
-    player1.spinResult.push(wheelItem);
+    // player1.spinResult.push(wheelItem);
+
+    if (wheelResult === "BANKRUPT") {
+      player1.spinResult.push({ wheelResult: 0 });
+      player1.score = 0;
+      updateP1Score();
+
+      $(".spin-btn").attr("disabled", false);
+    } else if (wheelResult === "LOSE A TURN") {
+      player1.spinResult.push({ wheelResult: 0 });
+      player1.score = 0;
+      updateP1Score();
+      $(".spin-btn").attr("disabled", false);
+    } else if (wheelResult === "FREE PLAY") {
+      alert("Spin the wheel again");
+      $(".spin-btn").attr("disabled", false);
+    } else {
+      player1.spinResult.push(wheelItem);
+    }
+
     console.log(player1);
   };
-  0;
 
   const transitionEnd = () => {
     $spinButton.css("pointer-events", "auto");
     $wheel.css("transition", "none");
     const actualDeg = deg % 360;
     $wheel.css({ transform: "rotate(" + actualDeg + "deg)" });
-    handleSpinResult(actualDeg);
+
+    $(".spin-btn").attr("disabled", true);
+    $(".vowel-btn").attr("disabled", false);
+    $(".solve-btn").attr("disabled", false);
+    $(".choose-letter").attr("disabled", false);
+
+    handleSpinResult(actualDeg, player1);
   };
 
   /////////////////////player data/////////////////////////////
@@ -238,22 +290,20 @@ const main = () => {
       {
         clickedletter: "",
       },
-      // {
-      //   clickedletter: "nonsense",
-      // },
     ],
     spinResult: [{ wheelResult: 0 }],
   };
 
   const render = (player1, textArray) => {
     player1Action(player1.input, player1.spinResult);
+
     console.log(player1);
   };
 
   /////////////////Display player 1 score//////////////////////
   const updateP1Score = () => {
     const $displayscorep1 = $(".display-p1score");
-    // $displayscorep1.removeClass("player1score");
+
     $displayscorep1.text(player1.score);
   };
 
@@ -280,15 +330,18 @@ const main = () => {
     if (word.includes(inputletter)) {
       updateSquares(inputletter);
       $displayinput.text(`Correct answer`);
+
       for (let i = 0; i < letterCount; i++) {
         player1.score += wheelScore;
       }
       /////////////display score////////////
       updateP1Score();
+      checkWin();
     } else if (word.includes(vowelLetter)) {
       updateSquares(vowelLetter);
       player1.score -= 200;
       updateP1Score();
+      checkWin();
     } else if (
       //////////////solve input correct////////
       solveinput === word.join("")
@@ -302,46 +355,17 @@ const main = () => {
 
       ////////////solve input wrong//////////
     } else if (solveinput !== word.join("")) {
-      // prompt("Wrong answer. Try again")
       $displayinput.text(`Wrong answer`);
     } else {
-      /////////////////display wrong letter and change player///////////
-      ////////////////////////////////////////////////////////////////////
     }
   };
-  let clickedletter;
 
+  let clickedletter;
   //<===================PLAYER 1 ACTION===================>//
   const player1Action = (input, spinResult) => {
-    //input letter into player1 data
-
-    const lastItemInput = player1.input[input.length - 1];
-    const inputletter = lastItemInput.clickedletter;
-
-    //solve input into player1 data
-    const solveinput = lastItemInput.solveinput;
-    const lastItemWheel = player1.spinResult[spinResult.length - 1];
-
-    //wheel score into player1 data
-    const wheelScore = lastItemWheel.wheelResult;
-
-    //vowel letter into player1 data
-    const vowelLetter = lastItemInput.vowel;
-
     loopSquareArray();
 
-    if (isGameOn(textArray) && isValidAction(letter, textArray)) {
-      /////////display letter chosen////////
-
-      //guess correct letter
-
-      if (wheelScore === "BANKRUPT") {
-        player1.score = 0;
-      } else if (wheelScore === "LOSE A TURN") {
-      } else if (wheelScore === "FREE PLAY") {
-        alert("Spin the wheel again");
-      } else checkLetter(input, spinResult);
-    }
+    checkLetter(input, spinResult);
   };
 
   const handleClickedLetter = (event) => {
@@ -392,8 +416,9 @@ const main = () => {
     } else {
       $("#vowelinput").show();
 
-      $(".vowel-btn").attr("disabled", true);
-      $(".solve-btn").attr("disabled", true);
+      $(".spin-btn").attr("disabled", false);
+      $(".vowel-btn").attr("disabled", false);
+      $(".solve-btn").attr("disabled", false);
       $(".choose-letter").attr("disabled", true);
     }
   };
@@ -418,6 +443,7 @@ const main = () => {
     $("#solve-word").show();
   };
 
+  render(player1);
   $("#alphabetbuttons").on("click", handleClickedLetter);
   $("#solve").on("click", handleSolveButton);
   $(".vowel-btn").on("click", handleVowel);
@@ -426,7 +452,6 @@ const main = () => {
   $wheel.on("transitionend", transitionEnd);
   $(".choose-letter").on("click", $displayConsonant);
   $(".solve-btn").on("click", $displaySolve);
-  render(player1);
 };
 
 $(main);
