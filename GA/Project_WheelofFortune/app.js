@@ -3,8 +3,8 @@ const main = () => {
 
   //////////////////////////// Word Library ////////////////////////////
   const wordLibrary = [
-    { categories: "MOVIES", name: ["SPIDERMAN", "IRONMAN"] },
-    { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
+    { categories: "MOVIES", name: ["IRONMAN"] },
+    // { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
   ];
 
   ////////////////////Display category///////////////////////////////
@@ -140,16 +140,23 @@ const main = () => {
 
   //////////check if letter already in the squares//////////
   const checkWin = () => {
-    for (let i = 0; i < $arraySquares.length; i++) {
-      textArray[i] = $arraySquares[i].innerHTML;
-      if (textArray.filter((x) => x).length === textArray.length) {
-        $displayinput.text(`You solved it! Your score is ${player1.score}`);
-        console.log("You Won");
-        console.log(textArray);
-      } // return true;
-      else {
-        // return false;
-      }
+    loopSquareArray();
+
+    if (textArray.filter((x) => x).length === textArray.length)
+    //https://stackoverflow.com/a/63143841
+     {
+      $displayinput.text(`You solved it! Your score is ${player1.score}`);
+      console.log("You Won");
+      console.log(textArray);
+
+      $(".spin-btn").attr("disabled", true);
+      $(".vowel-btn").attr("disabled", true);
+      $(".solve-btn").attr("disabled", true);
+      $(".choose-letter").attr("disabled", true);
+
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -199,34 +206,10 @@ const main = () => {
     22: 700,
     23: 900,
     24: 500,
-
-    // 1: "BANKRUPT",
-    // 2: "BANKRUPT",
-    // 3: "BANKRUPT",
-    // 4: "BANKRUPT",
-    // 5: "BANKRUPT",
-    // 6: "BANKRUPT",
-    // 7: 800,
-    // 8: "LOSE A TURN",
-    // 9: 700,
-    // 10: "FREE PLAY",
-    // 11: 650,
-    // 12: "BANKRUPT",
-    // 13: 900,
-    // 14: 500,
-    // 15: 350,
-    // 16: "BANKRUPT",
-    // 17: 500,
-    // 18: 400,
-    // 19: 550,
-    // 20: "BANKRUPT",
-    // 21: 300,
-    // 22: 700,
-    // 23: "BANKRUPT",
-    // 24: 500,
   };
 
   const spinWheel = () => {
+    //https://github.com/weibenfalk/wheel-of-fortune-part2/blob/main/vanilla-js-wheel-of-fortune-part2-FINISHED/script.js
     $display.text("-");
     $spinButton.css("pointer-events", "none");
     deg = Math.floor(1000 + Math.random() * 360);
@@ -246,7 +229,6 @@ const main = () => {
     const wheelResult = valueZones[zoneResult];
     $display.text(wheelResult);
     const wheelItem = { wheelResult: wheelResult };
-    // player1.spinResult.push(wheelItem);
 
     if (wheelResult === "BANKRUPT") {
       player1.spinResult.push({ wheelResult: 0 });
@@ -260,6 +242,7 @@ const main = () => {
       updateP1Score();
       $(".spin-btn").attr("disabled", false);
     } else if (wheelResult === "FREE PLAY") {
+      player1.spinResult.push({ wheelResult: 1 });
       alert("Spin the wheel again");
       $(".spin-btn").attr("disabled", false);
     } else {
@@ -269,6 +252,7 @@ const main = () => {
     console.log(player1);
   };
 
+  //https://github.com/weibenfalk/wheel-of-fortune-part2/blob/main/vanilla-js-wheel-of-fortune-part2-FINISHED/script.js
   const transitionEnd = () => {
     $spinButton.css("pointer-events", "auto");
     $wheel.css("transition", "none");
@@ -288,13 +272,13 @@ const main = () => {
     score: 0,
     input: [
       {
-        clickedletter: "",
+        // clickedletter: "",
       },
     ],
     spinResult: [{ wheelResult: 0 }],
   };
 
-  const render = (player1, textArray) => {
+  const render = (player1) => {
     player1Action(player1.input, player1.spinResult);
 
     console.log(player1);
@@ -352,6 +336,11 @@ const main = () => {
       player1.score += 1000;
       updateP1Score();
       $displayinput.text(`You solved it!`);
+
+      $(".spin-btn").attr("disabled", true);
+      $(".vowel-btn").attr("disabled", true);
+      $(".solve-btn").attr("disabled", true);
+      $(".choose-letter").attr("disabled", true);
 
       ////////////solve input wrong//////////
     } else if (solveinput !== word.join("")) {
