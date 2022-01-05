@@ -1,47 +1,12 @@
 const main = () => {
-
   const wordLibrary = [
-    { categories: "MOVIES", name: ["IRONMAN", "SPIDERMAN"] },
-    { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
+    { categories: "MOVIES", name: ["IRONMAN", 
+    // "SPIDERMAN"
+  ] 
+  },
+    // { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
   ];
 
-  const randomCategory = Math.floor(Math.random() * wordLibrary.length);
-  const wordCategory = wordLibrary[randomCategory].categories;
-
-
-  const $displayCategory = () => {
-    const $category = $("#category");
-    const $displayCategory = $category.text(`Category is ${wordCategory}`);
-    $category.append($displayCategory);
-  };
-  $displayCategory(wordCategory);
-
- 
-  const wordGenerator = () => {
-    //generate random category
-    // const randomCategory = Math.floor(Math.random() * wordLibrary.length);
-    // const wordCategory = wordLibrary[randomCategory].categories;
-
-    // $displayCategory(wordCategory);
-
-    //generate random words within category
-    const randomWord =
-      wordLibrary[randomCategory].name[
-        Math.floor(Math.random() * wordLibrary.length)
-      ];
-
-    //get individual letters of words
-    const charWords = randomWord.split("");
-
-    //word & category generated
-    return charWords;
-  };
-
-  const word = wordGenerator();
- 
-  /////////////////////////////////////////////////////////////////
-
-  //////////////// alphabet into buttons/////////////
   const alphabet = [
     "B",
     "C",
@@ -70,119 +35,18 @@ const main = () => {
     "Z",
   ];
 
-  //////////////////////////////////////////////////////////////
+  const randomCategory = Math.floor(Math.random() * wordLibrary.length);
+  const wordCategory = wordLibrary[randomCategory].categories;
 
-  ////////////////////create alhpabet ul//////////////////////////
-  const createAlphabet = () => {
-    alphabet.forEach((item) => {
-      const letter = $("#alphabetbuttons").append(
-        "<button>" + item + "</button>"
-      );
-    });
-  };
-  createAlphabet();
-  ////////////////////create empty boxes for words/////////////////////
-  const createSquares = () => {
-    for (let j = 0; j < word.length; j++) {
-      if (word[j] === " ") {
-        //white square with text for space " "
-        const $emptySpace = $("<li>")
-          .addClass("white square p-2 bd-highlight")
-          .attr("id", j);
-        const $createSpace = $("#answerletter").append($emptySpace);
-        $("#" + j).text(word[j]);
-      } else {
-        //green squares for letters
-        const $squareLetter = $("<li>")
-          .addClass("green square p-2 bd-highlight")
-          .attr("id", j);
-        const $createSquare = $("#answerletter").append($squareLetter);
-      }
-    }
-  };
-
-  createSquares();
-  /////////////////////////////////////////////////////////////////////
-
-  ///////////////////convert squares to array//////////////////////////
-  const $squares = $(".square");
-  const $arraySquares = $squares.toArray();
-  const textArray = [];
-  let letter;
-  let letterCount;
-
-  ///////////update squares with correct letter if clicked///////////
-  const updateSquares = (letter) => {
-    //on click of alphabet button, check if its the correct letter
-    letterCount = 0;
-    for (let i = 0; i < word.length; i++) {
-      if (letter === word[i]) {
-        $("#" + i).text(letter);
-        letterCount += 1;
-      }
-    }
-  };
-
-  ////////////////loop square array////////////////////////////
-  const loopSquareArray = () => {
-    for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
-      textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
-    }
-  };
-  ///////////////////////////////////////////////////////////////
-
-  ////////////////update square with word if solved////////////////////////////
-  const updateSquareSolved = (solveletter) => {
-    for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
-      textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
-      $("#" + arrayIndex).text(solveletter[arrayIndex]);
-    }
-  };
-
-  //<--------------------------GAME LOGIC-------------------------->//
-
-  //////////check if letter already in the squares//////////
-  const checkWin = () => {
-    loopSquareArray();
-
-    if (textArray.filter((x) => x).length === textArray.length)
-    //https://stackoverflow.com/a/63143841
-     {
-      $displayinput.text(`You solved it! Your score is ${player1.score}`);
-      console.log("You Won");
-      console.log(textArray);
-
-      $(".spin-btn").attr("disabled", true);
-      $(".vowel-btn").attr("disabled", true);
-      $(".solve-btn").attr("disabled", true);
-      $(".choose-letter").attr("disabled", true);
-
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  /////////////check for empty string in squares///////////////////
-  const isGameOn = (textArray) => {
-    if (textArray.includes("")) {
-      console.log("The game is still on");
-      return true;
-    } else {
-      console.log("GAME OVER");
-      return false;
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////
-
-  //<===================== WHEEL =====================>//
 
   const $wheel = $(".wheel");
   const $spinButton = $(".spin-btn");
   const $display = $(".display");
   let deg = 0;
   let zoneSize = 15; //deg
+
+  const $displayinput = $("#player1Input");
+
 
   const valueZones = {
     1: 5000,
@@ -211,19 +75,115 @@ const main = () => {
     24: 500,
   };
 
+  const $displayCategory = () => {
+    const $category = $("#category");
+    const $displayCategory = $category.text(`Category is ${wordCategory}`);
+    $category.append($displayCategory);
+  };
+  $displayCategory(wordCategory);
+
+  const wordGenerator = () => {
+    const randomWord =
+      wordLibrary[randomCategory].name[
+        Math.floor(Math.random() * wordLibrary.length)
+      ];
+
+    const charWords = randomWord.split("");
+
+    return charWords;
+  };
+
+  const word = wordGenerator();
+  console.log(word);
+
+  const createAlphabet = () => {
+    alphabet.forEach((item) => {
+      const letter = $("#alphabetbuttons").append(
+        "<button>" + item + "</button>"
+      );
+    });
+  };
+  createAlphabet();
+
+  const createSquares = () => {
+    for (let j = 0; j < word.length; j++) {
+      if (word[j] === " ") {
+        const $emptySpace = $("<li>")
+          .addClass("white square p-2 bd-highlight")
+          .attr("id", j);
+        const $createSpace = $("#answerletter").append($emptySpace);
+        $("#" + j).text(word[j]);
+      } else {
+        const $squareLetter = $("<li>")
+          .addClass("green square p-2 bd-highlight")
+          .attr("id", j);
+        const $createSquare = $("#answerletter").append($squareLetter);
+      }
+    }
+  };
+
+  createSquares();
+
+  const $squares = $(".square");
+  const $arraySquares = $squares.toArray();
+  const textArray = [];
+  let letterCount;
+
+  const updateSquares = (letter) => {
+    letterCount = 0;
+    for (let i = 0; i < word.length; i++) {
+      if (letter === word[i]) {
+        $("#" + i).text(letter);
+        letterCount += 1;
+      }
+    }
+  };
+
+  const loopSquareArray = () => {
+    for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
+      textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
+    }
+  };
+
+  const updateSquareSolved = (solveletter) => {
+    for (let arrayIndex = 0; arrayIndex < $arraySquares.length; arrayIndex++) {
+      textArray[arrayIndex] = $arraySquares[arrayIndex].innerHTML;
+      $("#" + arrayIndex).text(solveletter[arrayIndex]);
+    }
+  };
+
+  const $disableAllBtn = () => {
+    $(".spin-btn").attr("disabled", true);
+    $(".vowel-btn").attr("disabled", true);
+    $(".solve-btn").attr("disabled", true);
+    $(".choose-letter").attr("disabled", true);
+  };
+
+  const checkWin = () => {
+    loopSquareArray();
+
+    if (textArray.filter((x) => x).length === textArray.length)
+    //https://stackoverflow.com/a/63143841
+     {
+      $displayinput.text(`Solve the word`);    
+
+    } else {
+
+    }
+  };
+
+ 
+
   const spinWheel = () => {
     //https://github.com/weibenfalk/wheel-of-fortune-part2/blob/main/vanilla-js-wheel-of-fortune-part2-FINISHED/script.js
     $display.text("-");
     $spinButton.css("pointer-events", "none");
     deg = Math.floor(1000 + Math.random() * 360);
-    $wheel.css({transition: "all 10s ease-out"});
+    $wheel.css({ transition: "all 5s ease-out" });
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
     $wheel.css({ transition: "transform 3s" });
 
-    $(".spin-btn").attr("disabled", true);
-    $(".vowel-btn").attr("disabled", true);
-    $(".solve-btn").attr("disabled", true);
-    $(".choose-letter").attr("disabled", true);
+    $disableAllBtn();
 
     $displayinput.empty();
   };
@@ -240,21 +200,31 @@ const main = () => {
       updateP1Score();
 
       $(".spin-btn").attr("disabled", false);
+
     } else if (wheelResult === "LOSE A TURN") {
       player1.spinResult.push({ wheelResult: 0 });
       player1.score = 0;
       updateP1Score();
       $(".spin-btn").attr("disabled", false);
+
     } else if (wheelResult === "FREE PLAY") {
       player1.spinResult.push({ wheelResult: 1 });
       alert("Spin the wheel again");
       $(".spin-btn").attr("disabled", false);
+
     } else {
       player1.spinResult.push(wheelItem);
     }
 
     console.log(player1);
   };
+
+  const $disableSpinBtn = () => {
+    $(".spin-btn").attr("disabled", true);
+    $(".vowel-btn").attr("disabled", false);
+    $(".solve-btn").attr("disabled", false);
+    $(".choose-letter").attr("disabled", false);
+  }
 
   //https://github.com/weibenfalk/wheel-of-fortune-part2/blob/main/vanilla-js-wheel-of-fortune-part2-FINISHED/script.js
   const transitionEnd = () => {
@@ -263,10 +233,7 @@ const main = () => {
     const actualDeg = deg % 360;
     $wheel.css({ transform: "rotate(" + actualDeg + "deg)" });
 
-    $(".spin-btn").attr("disabled", true);
-    $(".vowel-btn").attr("disabled", false);
-    $(".solve-btn").attr("disabled", false);
-    $(".choose-letter").attr("disabled", false);
+    $disableSpinBtn();
 
     handleSpinResult(actualDeg, player1);
   };
@@ -288,18 +255,16 @@ const main = () => {
     console.log(player1);
   };
 
-  /////////////////Display player 1 score//////////////////////
   const updateP1Score = () => {
     const $displayscorep1 = $(".display-p1score");
 
     $displayscorep1.text(player1.score);
   };
 
-  /////////////////Display wrong move player 1//////////////////////
 
-  const $displayinput = $("#player1Input");
-
+  
   const checkLetter = (input, spinResult) => {
+    
     //input letter into player1 data
     const lastItemInput = player1.input[input.length - 1];
     const inputletter = lastItemInput.clickedletter;
@@ -322,29 +287,32 @@ const main = () => {
       for (let i = 0; i < letterCount; i++) {
         player1.score += wheelScore;
       }
-      /////////////display score////////////
+
       updateP1Score();
+
       checkWin();
     } else if (word.includes(vowelLetter)) {
       updateSquares(vowelLetter);
+
       player1.score -= 200;
+
       updateP1Score();
+
       checkWin();
-    } else if (
-      //////////////solve input correct////////
-      solveinput === word.join("")
-    ) {
+    } else if (solveinput === word.join("")) {
       const solveletter = solveinput.split("");
+
       $("#player1letter").empty();
+
       updateSquareSolved(solveletter);
+
       player1.score += 1000;
+
       updateP1Score();
+
       $displayinput.text(`You solved it!`);
 
-      $(".spin-btn").attr("disabled", true);
-      $(".vowel-btn").attr("disabled", true);
-      $(".solve-btn").attr("disabled", true);
-      $(".choose-letter").attr("disabled", true);
+      $disableAllBtn();
 
       ////////////solve input wrong//////////
     } else if (solveinput !== word.join("")) {
@@ -353,8 +321,7 @@ const main = () => {
     }
   };
 
-  let clickedletter;
-  //<===================PLAYER 1 ACTION===================>//
+
   const player1Action = (input, spinResult) => {
     loopSquareArray();
 
@@ -370,10 +337,7 @@ const main = () => {
     $(event.target).css("color", "grey");
     $("#alphabetbuttons").hide();
 
-    $(".spin-btn").attr("disabled", false);
-    $(".vowel-btn").attr("disabled", false);
-    $(".solve-btn").attr("disabled", false);
-    $(".choose-letter").attr("disabled", true);
+    $enableChooseLetterBtn();
 
     render(player1);
   };
@@ -403,16 +367,20 @@ const main = () => {
 
   createVowel();
 
+  const $enableChooseLetterBtn = () => {
+    $(".spin-btn").attr("disabled", false);
+    $(".vowel-btn").attr("disabled", false);
+    $(".solve-btn").attr("disabled", false);
+    $(".choose-letter").attr("disabled", true);
+  };
+
   const handleVowel = () => {
     if (player1.score < 200) {
       alert("You need more than $200 to buy a vowel");
     } else {
       $("#vowelinput").show();
 
-      $(".spin-btn").attr("disabled", false);
-      $(".vowel-btn").attr("disabled", false);
-      $(".solve-btn").attr("disabled", false);
-      $(".choose-letter").attr("disabled", true);
+      $enableChooseLetterBtn();
     }
   };
 

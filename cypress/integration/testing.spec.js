@@ -83,7 +83,7 @@ describe("Wheel of Fortune", () => {
 
     cy.get(".vowel-btn").click();
     cy.get("#vowelinput").contains("A").click();
-    cy.get("#player1Input").should("contain", "You solved it!");
+    cy.get("#player1Input").should("contain", "Solve the word");
 
   });
 });
@@ -95,6 +95,34 @@ describe("Wheel of Fortune", () => {
     cy.wait(6000);
     cy.get(".choose-letter").click();
     cy.get("#alphabetbuttons").contains("Z").click();
+
+    cy.get("#player1Input").should("contain", "Wrong answer");
+
+  });
+});
+
+describe("Wheel of Fortune", () => {
+  it("solve input should appear, display solved", () => {
+    cy.visit("http://127.0.0.1:5501/");
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".solve-btn").click();
+    cy.get("#solveword").type("ironman");
+    cy.get("#solve").click();
+
+    cy.get("#player1Input").should("contain", "You solved it!");
+
+  });
+});
+
+describe("Wheel of Fortune", () => {
+  it("solve input should appear, display wrong", () => {
+    cy.visit("http://127.0.0.1:5501/");
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".solve-btn").click();
+    cy.get("#solveword").type("dfbdfbf");
+    cy.get("#solve").click();
 
     cy.get("#player1Input").should("contain", "Wrong answer");
 
