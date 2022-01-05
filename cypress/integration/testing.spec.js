@@ -48,11 +48,55 @@ describe("Wheel of Fortune", () => {
     cy.get("#alphabetbuttons").contains("N").click();
 
     cy.get(".vowel-btn").click();
-    cy.get("#vowelletter").contains("O").click();
+    cy.get("#vowelinput").contains("O").click();
     cy.get("#answerletter").find("li").eq(2).should("contain", "O");
 
+  });
+});
+
+describe("Wheel of Fortune", () => {
+  it("should display solved when all filled up", () => {
+    cy.visit("http://127.0.0.1:5501/");
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".choose-letter").click();
+    cy.get("#alphabetbuttons").contains("N").click();
 
 
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".choose-letter").click();
+    cy.get("#alphabetbuttons").contains("M").click();
+
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".choose-letter").click();
+    cy.get("#alphabetbuttons").contains("R").click();
+    
+   
+
+    cy.get(".vowel-btn").click();
+    cy.get("#vowelinput").contains("O").click();
+
+    cy.get(".vowel-btn").click();
+    cy.get("#vowelinput").contains("I").click();
+
+    cy.get(".vowel-btn").click();
+    cy.get("#vowelinput").contains("A").click();
+    cy.get("#player1Input").should("contain", "You solved it!");
+
+  });
+});
+
+describe("Wheel of Fortune", () => {
+  it("should display wrong answer", () => {
+    cy.visit("http://127.0.0.1:5501/");
+    cy.get(".spin-btn").click();
+    cy.wait(6000);
+    cy.get(".choose-letter").click();
+    cy.get("#alphabetbuttons").contains("Z").click();
+
+    cy.get("#player1Input").should("contain", "Wrong answer");
 
   });
 });

@@ -1,41 +1,44 @@
 const main = () => {
-  //<--------------------------INTERFACE-------------------------->//
 
-  //////////////////////////// Word Library ////////////////////////////
   const wordLibrary = [
-    { categories: "MOVIES", name: ["IRONMAN"] },
-    // { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
+    { categories: "MOVIES", name: ["IRONMAN", "SPIDERMAN"] },
+    { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
   ];
 
-  ////////////////////Display category///////////////////////////////
-  const $displayCategory = (wordCategory) => {
+  const randomCategory = Math.floor(Math.random() * wordLibrary.length);
+  const wordCategory = wordLibrary[randomCategory].categories;
+
+
+  const $displayCategory = () => {
     const $category = $("#category");
     const $displayCategory = $category.text(`Category is ${wordCategory}`);
     $category.append($displayCategory);
   };
+  $displayCategory(wordCategory);
 
-  ///////////////////Generate random word to guess/////////////////////
+ 
   const wordGenerator = () => {
     //generate random category
-    const randomCategory = Math.floor(Math.random() * wordLibrary.length);
-    const wordCategory = wordLibrary[randomCategory].categories;
+    // const randomCategory = Math.floor(Math.random() * wordLibrary.length);
+    // const wordCategory = wordLibrary[randomCategory].categories;
 
-    $displayCategory(wordCategory);
+    // $displayCategory(wordCategory);
 
     //generate random words within category
-    const wordGenerator =
+    const randomWord =
       wordLibrary[randomCategory].name[
         Math.floor(Math.random() * wordLibrary.length)
       ];
 
     //get individual letters of words
-    const charWords = wordGenerator.split("");
+    const charWords = randomWord.split("");
 
     //word & category generated
     return charWords;
   };
 
   const word = wordGenerator();
+ 
   /////////////////////////////////////////////////////////////////
 
   //////////////// alphabet into buttons/////////////
@@ -213,8 +216,9 @@ const main = () => {
     $display.text("-");
     $spinButton.css("pointer-events", "none");
     deg = Math.floor(1000 + Math.random() * 360);
-    $wheel.css("transition", "all 10s ease-out");
+    $wheel.css({transition: "all 10s ease-out"});
     $wheel.css({ transform: "rotate(" + deg + "deg)" });
+    $wheel.css({ transition: "transform 3s" });
 
     $(".spin-btn").attr("disabled", true);
     $(".vowel-btn").attr("disabled", true);
