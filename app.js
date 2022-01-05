@@ -1,10 +1,10 @@
 const main = () => {
   const wordLibrary = [
     { categories: "MOVIES", name: ["IRONMAN", 
-    // "SPIDERMAN"
+    "SPIDERMAN"
   ] 
   },
-    // { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
+    { categories: "CELEBRITY", name: ["TOM HOLLAND", "ROBERT DOWNEY JR"] },
   ];
 
   const alphabet = [
